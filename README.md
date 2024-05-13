@@ -2,17 +2,16 @@ yii-debug-toolbar
 =================
 
 Debug panel for Yii 1.1 (Ported from Yii 2).
-Forked from https://github.com/koftikes/yii-debug-toolbar
 
-[![Latest Stable Version](https://poser.pugx.org/biskyt/yii-debug-toolbar/version.svg)](https://packagist.org/packages/biskyt/yii-debug-toolbar)
-[![Total Downloads](https://poser.pugx.org/biskyt/yii-debug-toolbar/downloads.png)](https://packagist.org/packages/biskyt/yii-debug-toolbar)
+[![Latest Stable Version](https://poser.pugx.org/sbs/yii-debug-toolbar/version.svg)](https://packagist.org/packages/sbs/yii-debug-toolbar)
+[![Total Downloads](https://poser.pugx.org/sbs/yii-debug-toolbar/downloads.png)](https://packagist.org/packages/sbs/yii-debug-toolbar)
 
 Installation
 -------------
 
 This extension is available at packagist.org and can be installed via composer by following command:
 
-`composer require --dev biskyt/yii-debug-toolbar`.
+`composer require --dev sbs/yii-debug-toolbar`.
 
 To enable toolbar in your application add following lines to config:
 
