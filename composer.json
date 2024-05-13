@@ -1,6 +1,6 @@
 {
-	"name": "sbs/yii-debug-toolbar",
-	"description": "Debug panel for Yii 1.1 (Ported from Yii 2)",
+	"name": "biskyt/yii-debug-toolbar",
+	"description": "Debug panel for Yii 1.1 (Ported from Yii 2), updatged for PHP 8.1+",
 	"keywords": ["yii", "extension", "debug"],
 	"homepage": "https://github.com/koftikes/yii-debug-toolbar",
 	"type": "yii-extension",
@@ -13,7 +13,11 @@
         {
             "name": "Konstantin Litvinov",
             "email": "koftikes@gmail.com"
-        }
+		},
+		{
+			"name": "Biskyt",
+			"email": "biskyt@no-reply.users.github.com"
+		}
 	],
     "autoload": {
         "classmap" : ["Yii2Debug.php"]
