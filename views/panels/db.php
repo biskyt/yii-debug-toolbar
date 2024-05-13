@@ -40,12 +40,12 @@
 </ul>
 <div class="tab-content">
     <div id="queries" class="tab-pane active">
-        <table class="table table-condensed table-bordered table-filtered" style="table-layout:fixed">
+        <table id="tbl-db" class="table table-condensed table-bordered table-filtered" style="table-layout:fixed">
             <thead>
             <tr>
-                <th style="width:100px">Time</th>
-                <th style="width:80px">Duration</th>
-                <th>Query</th>
+                <th style="width:100px"><a href="#" class="sortable">Time</a></th>
+                <th style="width:80px"><a href="#" class="sortable">Duration</a></th>
+                <th><a href="#" class="sortable">Query</a></th>
             </tr>
             </thead>
             <tbody>
@@ -94,17 +94,17 @@
         </table>
     </div><!-- queries -->
     <div id="resume" class="tab-pane">
-        <table class="table table-condensed table-bordered table-striped table-hover table-filtered"
+        <table id="tbl-resume" class="table table-condensed table-bordered table-striped table-hover table-filtered"
                style="table-layout:fixed">
             <thead>
             <tr>
                 <th style="width:30px;">#</th>
                 <th>Query</th>
-                <th style="width:50px;">Count</th>
-                <th style="width:70px;">Total</th>
-                <th style="width:70px;">Avg</th>
-                <th style="width:70px;">Min</th>
-                <th style="width:70px;">Max</th>
+                <th style="width:50px;"><a href="#" class="sortable">Count</a></th>
+                <th style="width:70px;"><a href="#" class="sortable">Total</a></th>
+                <th style="width:70px;"><a href="#" class="sortable">Avg</a></th>
+                <th style="width:70px;"><a href="#" class="sortable">Min</a></th>
+                <th style="width:70px;"><a href="#" class="sortable">Max</a></th>
             </tr>
             </thead>
             <tbody>
@@ -167,3 +167,32 @@ $('a.explain').click(function(e){
 JS
 );
 ?>
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+    const comparer = (idx, asc, tableId) => (a, b) => {
+        const v1 = getCellValue(asc ? a : b, idx);
+        const v2 = getCellValue(asc ? b : a, idx);
+        if (tableId === 'tbl-db') {
+            if (idx === 1) { // If it's the first column (which is a time in ms), parse as float
+                return parseFloat(v1) - parseFloat(v2);
+            } else { // Otherwise, sort as string
+                return v1.toString().localeCompare(v2);
+            }
+        } else if (tableId === 'tbl-resume') {
+            if (idx >= 2 && idx <= 5) { // Columns 3, 4, 5, and 6 should be parsed as float
+                return parseFloat(v1) - parseFloat(v2);
+            } else { // Otherwise, sort as string
+                return v1.toString().localeCompare(v2);
+            }
+        }
+    };
+    document.querySelectorAll('th a.sortable').forEach(th => th.addEventListener('click', () => {
+        const table = th.closest('table');
+        const tableId = table.id;
+        Array.from(table.querySelectorAll('tr'))
+            .sort(comparer(Array.from(th.parentNode.parentNode.children).indexOf(th.parentNode), this.asc = !this.asc, tableId))
+            .forEach(tr => table.appendChild(tr) );
+    }));
+});
+</script>
