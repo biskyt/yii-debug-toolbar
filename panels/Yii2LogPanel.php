@@ -58,7 +58,7 @@ class Yii2LogPanel extends Yii2DebugPanel
         $data = $this->getData();
         foreach ($data['messages'] as $i => $log) {
             list($message, $level, $category, $time) = $log;
-            $time                                    = \date('H:i:s.', $time) . \sprintf('%03d', (int) (($time - (int) $time) * 1000));
+            $time                                    = \date('H:i:s.', (int) $time) . \sprintf('%03d', (int) (($time - (int) $time) * 1000));
             $traces                                  = [];
             if (false !== ($lines = \explode("\nStack trace:\n", $message, 2))) {
                 $message = $lines[0];
