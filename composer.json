@@ -1,6 +1,6 @@
 {
 	"name": "biskyt/yii-debug-toolbar",
-	"description": "Debug panel for Yii 1.1 (Ported from Yii 2), updatged for PHP 8.1+",
+	"description": "Debug panel for Yii 1.1 (Ported from Yii 2), updated for PHP 8.1+",
 	"keywords": ["yii", "extension", "debug"],
 	"homepage": "https://github.com/biskyt/yii-debug-toolbar",
 	"type": "yii-extension",
@@ -23,8 +23,8 @@
         "classmap" : ["Yii2Debug.php"]
     },
 	"require": {
-		"php": ">=5.6",
-		"yiisoft/yii": ">=1.1.15"
+		"php": ">=7.4",
+		"yiisoft/yii": ">=1.1.19"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^2.16"
