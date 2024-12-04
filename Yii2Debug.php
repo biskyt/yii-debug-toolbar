@@ -231,7 +231,7 @@ class Yii2Debug extends CApplicationComponent
         if($('#yii2-debug').length === 0) {
             $('<div id="yii2-debug">').appendTo('body');
         }
-        $('#yii2-debug').load('${url}', function() { getToolbar(); });
+        $('#yii2-debug').load('{$url}', function() { getToolbar(); });
     })(jQuery);
 JS
         );

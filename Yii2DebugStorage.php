@@ -53,7 +53,7 @@ class Yii2DebugStorage implements Yii2DebugStorageInterface
      */
     protected function getTagFilePath($tag)
     {
-        return "{$this->logPath}/${tag}.data";
+        return "{$this->logPath}/{$tag}.data";
     }
 
     /**
@@ -96,7 +96,7 @@ class Yii2DebugStorage implements Yii2DebugStorageInterface
         $indexFile = $this->getManifestFilePath();
         \touch($indexFile);
         if (false === ($fp = @\fopen($indexFile, 'rb+'))) {
-            throw new Exception("Unable to open debug data index file: ${indexFile}");
+            throw new Exception("Unable to open debug data index file: {$indexFile}");
         }
         @\flock($fp, LOCK_EX);
         $manifest = '';

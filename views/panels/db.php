@@ -65,7 +65,7 @@
                                         <ul class="dropdown-menu pull-right">
                                             <?php foreach ($explainConnections as $name => $info): ?>
                                                 <li>
-                                                    <?php echo CHtml::link("${name} - {$info['driver']}", [
+                                                    <?php echo CHtml::link("{$name} - {$info['driver']}", [
                                                         'explain',
                                                         'tag'        => $this->tag,
                                                         'num'        => $num,
