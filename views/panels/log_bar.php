@@ -6,15 +6,15 @@
  * @var int          $warningCount
  * @var int          $infoCount
  */
-$title = "Logged ${count} messages";
+$title = "Logged {$count} messages";
 if ($errorCount) {
-    $title .= " ${errorCount} errors";
+    $title .= " {$errorCount} errors";
 }
 if ($warningCount) {
-    $title .= " ${warningCount} warnings";
+    $title .= " {$warningCount} warnings";
 }
 if ($infoCount) {
-    $title .= " ${infoCount} info";
+    $title .= " {$infoCount} info";
 }
 ?>
 <div class="yii2-debug-toolbar-block">

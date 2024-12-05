@@ -117,7 +117,7 @@ class DefaultController extends CController
         }
         $message = $dbPanel->messageByNum($num);
         if (null === $message) {
-            throw new Exception("Not found query by number ${num}");
+            throw new Exception("Not found query by number {$num}");
         }
         $query = $dbPanel->formatSql($message, true);
         /** @var CDbConnection $db */
@@ -171,7 +171,7 @@ class DefaultController extends CController
     {
         $data = $this->getOwner()->getStorage()->loadTag($tag, $maxRetry);
         if ([] === $data) {
-            throw new CHttpException(404, "Unable to find debug data tagged with '${tag}'.");
+            throw new CHttpException(404, "Unable to find debug data tagged with {$tag}'.");
         }
 
         foreach ($this->owner->panels as $id => $panel) {
