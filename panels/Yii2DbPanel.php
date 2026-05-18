@@ -18,6 +18,14 @@ class Yii2DbPanel extends Yii2DebugPanel
     public $canExplain = true;
 
     /**
+     * @var int the maximum number of rows to render in the Queries tab by default.
+     *          Use 0 to disable the cap. A "Show all" link is rendered below the
+     *          table when the cap is hit and the user can click it to render the
+     *          full list (may be slow for very large query counts).
+     */
+    public $queriesDisplayLimit = 1000;
+
+    /**
      * {@inheritdoc}
      */
     public function init()
@@ -211,20 +219,26 @@ class Yii2DbPanel extends Yii2DebugPanel
      *
      * @return string
      */
+    private $_formatCache = [];
+
     public function formatSql($message, $insertParams)
     {
+        $cacheKey = ((int) (bool) $insertParams) . '|' . $message;
+        if (isset($this->_formatCache[$cacheKey])) {
+            return $this->_formatCache[$cacheKey];
+        }
         $sqlStart = \mb_strpos($message, '(') + 1;
         $sqlEnd   = \mb_strrpos($message, ')');
         $sql      = \mb_substr($message, $sqlStart, $sqlEnd - $sqlStart);
         if (false !== \mb_strpos($sql, '. Bound with ')) {
             list($query, $params) = \explode('. Bound with ', $sql);
             if (!$insertParams) {
-                return $query;
+                return $this->_formatCache[$cacheKey] = $query;
             }
             $sql = $this->insertParamsToSql($query, $this->parseParamsSql($params));
         }
 
-        return $sql;
+        return $this->_formatCache[$cacheKey] = $sql;
     }
 
     /**
@@ -335,6 +349,8 @@ class Yii2DbPanel extends Yii2DebugPanel
      */
     private $_hl;
 
+    private $_highlightCache = [];
+
     /**
      * Подсветка sql-кода.
      *
@@ -344,6 +360,9 @@ class Yii2DbPanel extends Yii2DebugPanel
      */
     public function highlightSql($sql)
     {
+        if (isset($this->_highlightCache[$sql])) {
+            return $this->_highlightCache[$sql];
+        }
         if (null === $this->_hl) {
             $this->_hl = Yii::createComponent([
                 'class'           => 'CTextHighlighter',
@@ -353,7 +372,7 @@ class Yii2DbPanel extends Yii2DebugPanel
         }
         $html = $this->_hl->highlight($sql);
 
-        return \strip_tags($html, '<div>,<span>');
+        return $this->_highlightCache[$sql] = \strip_tags($html, '<div>,<span>');
     }
 
     public function save()
@@ -430,6 +449,9 @@ class Yii2DbPanel extends Yii2DebugPanel
         }
     }
 
+    private $_explainConnectionsSelect;
+    private $_explainConnectionsNonSelect;
+
     /**
      * Return connection list for query.
      *
@@ -439,14 +461,27 @@ class Yii2DbPanel extends Yii2DebugPanel
      */
     public function getExplainConnections($query)
     {
+        // The per-connection result depends on the query only through the
+        // "is this a SELECT?" check inside getExplainQuery(), so the full
+        // list can be memoized with just two buckets.
+        $isSelect = (bool) \preg_match('/^\s*SELECT/', $query);
+        if ($isSelect && null !== $this->_explainConnectionsSelect) {
+            return $this->_explainConnectionsSelect;
+        }
+        if (!$isSelect && null !== $this->_explainConnectionsNonSelect) {
+            return $this->_explainConnectionsNonSelect;
+        }
         $connections = [];
         foreach ($this->data['connections'] as $name => $connection) {
             if (null !== $this->getExplainQuery($query, $connection['driver'])) {
                 $connections[$name] = $connection;
             }
         }
+        if ($isSelect) {
+            return $this->_explainConnectionsSelect = $connections;
+        }
 
-        return $connections;
+        return $this->_explainConnectionsNonSelect = $connections;
     }
 
     /**
