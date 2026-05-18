@@ -10,13 +10,13 @@
  */
 ?>
 <ul class="nav nav-tabs">
-    <li class="active">
+    <li>
         <a href="#queries" data-toggle="tab">
             Queries
             <span class="badge badge-info"><?php echo $queriesCount; ?></span>
         </a>
     </li>
-    <li>
+    <li class="active">
         <a href="#resume" data-toggle="tab">
             Resume
             <?php if ($queriesCount > $resumeCount): ?>
@@ -39,7 +39,25 @@
     </li>
 </ul>
 <div class="tab-content">
-    <div id="queries" class="tab-pane active">
+    <div id="queries" class="tab-pane">
+        <?php
+        $displayLimit      = (int) $this->queriesDisplayLimit;
+        $showAll           = (bool) Yii::app()->getRequest()->getQuery('showAll');
+        $totalQueries      = \count($queries);
+        $capped            = (!$showAll && $displayLimit > 0 && $totalQueries > $displayLimit);
+        $queriesToRender   = $capped ? \array_slice($queries, 0, $displayLimit, true) : $queries;
+
+        $requestUri = Yii::app()->getRequest()->getRequestUri();
+        $requestUri = \preg_replace('/([?&])showAll=[^&]*(&|$)/', '$1', $requestUri);
+        $requestUri = \rtrim($requestUri, '?&');
+        $showAllUrl = $requestUri . (\strpos($requestUri, '?') === false ? '?' : '&') . 'showAll=1';
+        ?>
+        <?php if ($capped): ?>
+            <div class="alert alert-info" style="margin-bottom:10px">
+                Showing first <?php echo $displayLimit; ?> of <?php echo $totalQueries; ?> queries.
+                <?php echo CHtml::link('Show all ' . $totalQueries . ' (may be slow)', $showAllUrl); ?>
+            </div>
+        <?php endif; ?>
         <table id="tbl-db" class="table table-condensed table-bordered table-filtered" style="table-layout:fixed">
             <thead>
             <tr>
@@ -49,7 +67,7 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($queries as $num => $query): ?>
+            <?php foreach ($queriesToRender as $num => $query): ?>
                 <tr>
                     <td style="width:100px"><?php echo $query['time']; ?></td>
                     <td style="width:80px"><?php echo $query['duration']; ?></td>
@@ -93,7 +111,7 @@
             </tbody>
         </table>
     </div><!-- queries -->
-    <div id="resume" class="tab-pane">
+    <div id="resume" class="tab-pane active">
         <table id="tbl-resume" class="table table-condensed table-bordered table-striped table-hover table-filtered"
                style="table-layout:fixed">
             <thead>
